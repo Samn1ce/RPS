@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import Triangle from "./icons/IconTriangle.vue";
 import Scissors from "./icons/IconScissors.vue";
 import Rock from "./icons/IconRock.vue";
@@ -8,6 +8,15 @@ import Options from "@/assets/Options.json";
 
 // Define a reactive variable to store the selected index
 const selectedIndex = ref<number | null>(null);
+const comSelectedOption = ref(Math.floor(Math.random() * Options.length));
+
+// Computed property to get the selected option
+const selectedOption = computed(() =>
+  selectedIndex.value !== null ? Options[selectedIndex.value] : null
+);
+
+// Computed property to get the computer's selected option
+const computerOption = computed(() => Options[comSelectedOption.value]);
 
 // Function to handle click and set the selected index
 const handleSelect = (index: number) => {
@@ -39,11 +48,11 @@ const handleSelect = (index: number) => {
           ]"
         >
           <div
-            class="w-full h-full bg-[#4865f4 absolute top-2 rounded-full"
+            class="w-full h-full bg-[#4865f4] absolute top-2 rounded-full"
             :style="{ backgroundColor: option.colorTop }"
           ></div>
           <div
-            class="w-full h-full bg-[#5671f5 absolute rounded-full"
+            class="w-full h-full bg-[#5671f5] absolute rounded-full"
             :style="{ backgroundColor: option.colorBottom }"
           ></div>
           <div
@@ -55,7 +64,8 @@ const handleSelect = (index: number) => {
       </div>
     </div>
 
-    <!-- <div
+    <div
+      v-if="selectedOption"
       class="w-2/3 h-full border-2 border-green-500 flex items-center justify-between"
     >
       <div
@@ -66,14 +76,18 @@ const handleSelect = (index: number) => {
           class="w-52 h-52 flex items-center justify-center relative col-span-2"
         >
           <div
-            class="w-full h-full bg-[#dc2e4e] absolute top-2 rounded-full"
+            class="w-full h-full absolute top-2 rounded-full"
+            :style="{ backgroundColor: selectedOption.colorTop }"
           ></div>
-          <div class="w-full h-full bg-[#dd405d] absolute rounded-full"></div>
+          <div
+            class="w-full h-full absolute rounded-full"
+            :style="{ backgroundColor: selectedOption.colorBottom }"
+          ></div>
           <div
             class="w-3/4 h-3/4 bg-slate-300 absolute top-3 mt-2 rounded-full"
           ></div>
           <div class="w-3/4 h-3/4 bg-zinc-200 absolute mt-2 rounded-full"></div>
-          <Scissors class="absolute" />
+          <component :is="selectedOption.icon" class="absolute" />
         </div>
       </div>
       <div class="text-zinc-100 text-4xl font-bold mx-auto md:mx-0">
@@ -85,21 +99,25 @@ const handleSelect = (index: number) => {
       <div
         class="text-white font-bold flex flex-col justify-between items-center gap-8"
       >
-        <p>YOU PICKED</p>
+        <p>HOUSE PICKED</p>
         <div
           class="w-52 h-52 flex items-center justify-center relative col-span-2"
         >
           <div
-            class="w-full h-full bg-[#dc2e4e] absolute top-2 rounded-full"
+            class="w-full h-full absolute top-2 rounded-full"
+            :style="{ backgroundColor: computerOption.colorTop }"
           ></div>
-          <div class="w-full h-full bg-[#dd405d] absolute rounded-full"></div>
+          <div
+            class="w-full h-full absolute rounded-full"
+            :style="{ backgroundColor: computerOption.colorBottom }"
+          ></div>
           <div
             class="w-3/4 h-3/4 bg-slate-300 absolute top-3 mt-2 rounded-full"
           ></div>
           <div class="w-3/4 h-3/4 bg-zinc-200 absolute mt-2 rounded-full"></div>
-          <Scissors class="absolute" />
+          <component :is="computerOption.icon" class="absolute" />
         </div>
       </div>
-    </div> -->
+    </div>
   </div>
 </template>
