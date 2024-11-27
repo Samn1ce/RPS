@@ -1,0 +1,17 @@
+[
+  {
+    "icon": "IconPaper",
+    "colorTop": "#4865f4",
+    "colorBottom": "#5671f5"
+  },
+  {
+    "icon": "IconScissors",
+    "colorTop": "#ec9e0e",
+    "colorBottom": "#eca922"
+  },
+  {
+    "icon": "IconRock",
+    "colorTop": "#dc2e4e",
+    "colorBottom": "#dd405d"
+  }
+]
