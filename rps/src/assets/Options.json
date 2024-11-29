@@ -1,15 +1,18 @@
 [
   {
+    "name": "Paper",
     "icon": "IconPaper",
     "colorTop": "#4865f4",
     "colorBottom": "#5671f5"
   },
   {
+    "name": "Scissors",
     "icon": "IconScissors",
     "colorTop": "#ec9e0e",
     "colorBottom": "#eca922"
   },
   {
+    "name": "Rock",
     "icon": "IconRock",
     "colorTop": "#dc2e4e",
     "colorBottom": "#dd405d"

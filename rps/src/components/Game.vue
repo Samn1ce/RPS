@@ -17,11 +17,45 @@ const selectedOption = computed(() =>
 
 // Computed property to get the computer's selected option
 const computerOption = computed(() => Options[comSelectedOption.value]);
+console.log(computerOption);
 
 // Function to handle click and set the selected index
 const handleSelect = (index: number) => {
   selectedIndex.value = index;
   console.log("Selected index:", index); // Optional: For debugging
+};
+
+const handleClick = (index: number) => {
+  handleSelect(index); // Select the user option
+  comSelectedOption.value = Math.floor(Math.random() * Options.length); // Generate a new random option for the computer
+  determineWinner();
+};
+
+const gameResult = ref<string>("");
+
+const determineWinner = () => {
+  if (selectedOption.value && computerOption.value) {
+    if (selectedOption.value.name === computerOption.value.name) {
+      gameResult.value = "It's a tie!";
+    } else if (
+      (selectedOption.value.name === "Rock" &&
+        computerOption.value.name === "Scissors") ||
+      (selectedOption.value.name === "Paper" &&
+        computerOption.value.name === "Rock") ||
+      (selectedOption.value.name === "Scissors" &&
+        computerOption.value.name === "Paper")
+    ) {
+      gameResult.value = "You Win!";
+    } else {
+      gameResult.value = "You Lose!";
+    }
+  }
+};
+
+const step = ref<number>(1);
+
+const setStep = (value: any) => {
+  step.value = value;
 };
 </script>
 
@@ -30,6 +64,8 @@ const handleSelect = (index: number) => {
     class="flex flex-col gap-8 md:flex-row justify-center items-center md:h-full w-full max-w-7xl max-h-[700px]"
   >
     <div
+      @click="setStep(2)"
+      v-if="step === 1"
       class="relative w-full h-1/2 md:h-full flex justify-center items-center"
     >
       <Triangle />
@@ -39,9 +75,9 @@ const handleSelect = (index: number) => {
         <div
           v-for="(option, index) in Options"
           :key="index"
-          @click="handleSelect(index)"
+          @click="handleClick(index)"
           :class="[
-            'w-36 h-36 md:w-36 md:h-36 lg:w-44 lg:h-44 flex items-center justify-center absolute',
+            'w-36 h-36 md:w-36 md:h-36 lg:w-44 lg:h-44 flex items-center justify-center absolute cursor-pointer',
             index === 0 ? '-top-10 md:top-0 -left-10' : '',
             index === 1 ? '-top-10 md:top-0 -right-10' : '',
             index === 2 ? 'bottom-0' : '',
@@ -65,8 +101,9 @@ const handleSelect = (index: number) => {
     </div>
 
     <div
+      v-else
       v-if="selectedOption"
-      class="w-2/3 h-full border-2 border-green-500 flex items-center justify-between"
+      class="w-2/3 h-full flex items-center justify-between"
     >
       <div
         class="text-white font-bold flex flex-col justify-between items-center gap-8"
@@ -91,8 +128,11 @@ const handleSelect = (index: number) => {
         </div>
       </div>
       <div class="text-zinc-100 text-4xl font-bold mx-auto md:mx-0">
-        <p>YOU WIN</p>
-        <button class="bg-white text-red-600 text-sm w-40 h-10 rounded-md">
+        <p>{{ gameResult }}</p>
+        <button
+          @click="setStep(1)"
+          class="bg-white text-red-600 text-sm w-40 h-10 rounded-md"
+        >
           PLAY AGAIN
         </button>
       </div>
