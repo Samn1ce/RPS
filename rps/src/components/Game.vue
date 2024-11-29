@@ -30,12 +30,10 @@ const selectedOption = computed<any>(() =>
 
 // Computed property to get the computer's selected option
 const computerOption = computed<any>(() => Options[comSelectedOption.value]);
-console.log(computerOption);
 
 // Function to handle click and set the selected index
 const handleSelect = (index: number) => {
   selectedIndex.value = index;
-  console.log("Selected index:", index); // Optional: For debugging
 };
 
 const handleClick = (index: number) => {
