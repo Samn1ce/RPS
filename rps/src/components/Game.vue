@@ -12,17 +12,24 @@ const props = defineProps({
   updateScore: Function,
 });
 
+// Create an icons object that maps the JSON icon names to SVG components
+const icons = {
+  IconPaper: Paper,
+  IconScissors: Scissors,
+  IconRock: Rock,
+};
+
 // Define a reactive variable to store the selected index
 const selectedIndex = ref<number | null>(null);
 const comSelectedOption = ref(Math.floor(Math.random() * Options.length));
 
 // Computed property to get the selected option
-const selectedOption = computed(() =>
+const selectedOption = computed<any>(() =>
   selectedIndex.value !== null ? Options[selectedIndex.value] : null
 );
 
 // Computed property to get the computer's selected option
-const computerOption = computed(() => Options[comSelectedOption.value]);
+const computerOption = computed<any>(() => Options[comSelectedOption.value]);
 console.log(computerOption);
 
 // Function to handle click and set the selected index
@@ -35,6 +42,7 @@ const handleClick = (index: number) => {
   handleSelect(index); // Select the user option
   comSelectedOption.value = Math.floor(Math.random() * Options.length); // Generate a new random option for the computer
   determineWinner();
+  setStep(2);
 };
 
 const gameResult = ref<string>("");
@@ -59,12 +67,6 @@ const determineWinner = () => {
   }
 };
 
-const gameScoreCount = () => {
-  if (gameResult.value === "You Win!") {
-    gameScore.value++;
-  }
-};
-
 const step = ref<number>(1);
 
 const setStep = (value: any) => {
@@ -77,7 +79,6 @@ const setStep = (value: any) => {
     class="flex flex-col gap-8 md:flex-row justify-center items-center md:h-full w-full max-w-7xl max-h-[700px]"
   >
     <div
-      @click="setStep(2)"
       v-if="step === 1"
       class="relative w-full h-1/2 md:h-full flex justify-center items-center"
     >
@@ -108,7 +109,7 @@ const setStep = (value: any) => {
             class="w-3/4 h-3/4 bg-slate-300 absolute top-3 mt-2 rounded-full"
           ></div>
           <div class="w-3/4 h-3/4 bg-zinc-200 absolute mt-2 rounded-full"></div>
-          <div class="absolute">{{ option.icon }}</div>
+          <component class="absolute" :is="icons[option.icon]" />
         </div>
       </div>
     </div>
@@ -116,10 +117,10 @@ const setStep = (value: any) => {
     <div
       v-else
       v-if="selectedOption"
-      class="w-11/12 md:w-2/3 h-full grid grid-cols-2 md:flex items-center justify-between flex-wrap md:flex-nowrap border-red-500 border"
+      class="w-11/12 md:w-2/3 h-full grid grid-cols-2 md:flex items-center justify-between md:flex-nowrap"
     >
       <div
-        class="text-white font-bold flex flex-col justify-between items-center gap-8 order-3 md:order-1"
+        class="text-white font-bold flex flex-col justify-between items-center gap-8 order-first"
       >
         <p>YOU PICKED</p>
         <div
@@ -137,11 +138,11 @@ const setStep = (value: any) => {
             class="w-3/4 h-3/4 bg-slate-300 absolute top-3 mt-2 rounded-full"
           ></div>
           <div class="w-3/4 h-3/4 bg-zinc-200 absolute mt-2 rounded-full"></div>
-          <component :is="selectedOption.icon" class="absolute" />
+          <component :is="icons[selectedOption.icon]" class="absolute" />
         </div>
       </div>
       <div
-        class="text-zinc-100 text-4xl font-bold mx-auto md:mx-0 order-3 md:order-2 col-span-2 self-center mt-10 md:mt-0"
+        class="text-zinc-100 text-4xl font-bold mx-auto md:mx-0 order-last md:order-2 col-span-2 self-center mt-10 md:mt-0"
       >
         <p>{{ gameResult }}</p>
         <button
@@ -152,7 +153,7 @@ const setStep = (value: any) => {
         </button>
       </div>
       <div
-        class="text-white font-bold flex flex-col justify-between items-center gap-8 order-2 md:order-3"
+        class="text-white font-bold flex flex-col justify-between items-center gap-8 order-2 md:order-last"
       >
         <p>HOUSE PICKED</p>
         <div
@@ -170,7 +171,7 @@ const setStep = (value: any) => {
             class="w-3/4 h-3/4 bg-slate-300 absolute top-3 mt-2 rounded-full"
           ></div>
           <div class="w-3/4 h-3/4 bg-zinc-200 absolute mt-2 rounded-full"></div>
-          <component :is="computerOption.icon" class="absolute" />
+          <component :is="icons[computerOption.icon]" class="absolute" />
         </div>
       </div>
     </div>
