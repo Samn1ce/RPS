@@ -6,6 +6,12 @@ import Rules from "@/components/icons/IconRules.vue";
 import Close from "@/components/icons/IconClose.vue";
 
 const rules = ref<boolean>(false);
+const gameScore = ref(0);
+
+// Function to update the score
+const updateScore = (increment: number) => {
+  gameScore.value += increment;
+};
 </script>
 
 <template>
@@ -23,12 +29,12 @@ const rules = ref<boolean>(false);
           class="w-24 h-20 md:w-36 md:h-32 bg-zinc-100 rounded-lg flex flex-col justify-center items-center"
         >
           <p>Score</p>
-          <p class="text-4xl md:text-7xl">12</p>
+          <p class="text-4xl md:text-7xl">{{ gameScore }}</p>
         </div>
       </div>
     </header>
     <div class="flex justify-center items-center flex-grow pt-10">
-      <Game />
+      <Game :gameScore="gameScore" :updateScore="updateScore" />
     </div>
     <footer class="self-end">
       <button

@@ -1,10 +1,16 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, defineProps } from "vue";
 import Triangle from "./icons/IconTriangle.vue";
 import Scissors from "./icons/IconScissors.vue";
 import Rock from "./icons/IconRock.vue";
 import Paper from "./icons/IconPaper.vue";
 import Options from "@/assets/Options.json";
+
+// Define props to accept gameScore and updateScore
+const props = defineProps({
+  gameScore: Number,
+  updateScore: Function,
+});
 
 // Define a reactive variable to store the selected index
 const selectedIndex = ref<number | null>(null);
@@ -46,9 +52,16 @@ const determineWinner = () => {
         computerOption.value.name === "Paper")
     ) {
       gameResult.value = "You Win!";
+      props.updateScore(1); // Update the score using the passed function
     } else {
       gameResult.value = "You Lose!";
     }
+  }
+};
+
+const gameScoreCount = () => {
+  if (gameResult.value === "You Win!") {
+    gameScore.value++;
   }
 };
 
@@ -103,14 +116,14 @@ const setStep = (value: any) => {
     <div
       v-else
       v-if="selectedOption"
-      class="w-2/3 h-full flex items-center justify-between"
+      class="w-11/12 md:w-2/3 h-full grid grid-cols-2 md:flex items-center justify-between flex-wrap md:flex-nowrap border-red-500 border"
     >
       <div
-        class="text-white font-bold flex flex-col justify-between items-center gap-8"
+        class="text-white font-bold flex flex-col justify-between items-center gap-8 order-3 md:order-1"
       >
         <p>YOU PICKED</p>
         <div
-          class="w-52 h-52 flex items-center justify-center relative col-span-2"
+          class="w-36 h-36 md:w-36 md:h-36 lg:h-52 lg:w-52 flex items-center justify-center relative col-span-2"
         >
           <div
             class="w-full h-full absolute top-2 rounded-full"
@@ -127,7 +140,9 @@ const setStep = (value: any) => {
           <component :is="selectedOption.icon" class="absolute" />
         </div>
       </div>
-      <div class="text-zinc-100 text-4xl font-bold mx-auto md:mx-0">
+      <div
+        class="text-zinc-100 text-4xl font-bold mx-auto md:mx-0 order-3 md:order-2 col-span-2 self-center mt-10 md:mt-0"
+      >
         <p>{{ gameResult }}</p>
         <button
           @click="setStep(1)"
@@ -137,11 +152,11 @@ const setStep = (value: any) => {
         </button>
       </div>
       <div
-        class="text-white font-bold flex flex-col justify-between items-center gap-8"
+        class="text-white font-bold flex flex-col justify-between items-center gap-8 order-2 md:order-3"
       >
         <p>HOUSE PICKED</p>
         <div
-          class="w-52 h-52 flex items-center justify-center relative col-span-2"
+          class="w-36 h-36 md:w-36 md:h-36 lg:h-52 lg:w-52 flex items-center justify-center relative col-span-2"
         >
           <div
             class="w-full h-full absolute top-2 rounded-full"
