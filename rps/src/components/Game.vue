@@ -7,10 +7,17 @@ import Paper from "./icons/IconPaper.vue";
 import Options from "@/assets/Options.json";
 
 // Define props to accept gameScore and updateScore
-const props = defineProps({
-  gameScore: Number,
-  updateScore: Function,
-});
+const props = defineProps<{
+  gameScore: number;
+  updateScore: (increment: number) => void;
+}>();
+
+interface Option {
+  name: string;
+  icon: keyof typeof icons;
+  colorTop: string;
+  colorBottom: string;
+}
 
 // Create an icons object that maps the JSON icon names to SVG components
 const icons = {
@@ -19,17 +26,21 @@ const icons = {
   IconRock: Rock,
 };
 
+const typedOptions = Options as Option[];
+
 // Define a reactive variable to store the selected index
 const selectedIndex = ref<number | null>(null);
 const comSelectedOption = ref(Math.floor(Math.random() * Options.length));
 
 // Computed property to get the selected option
-const selectedOption = computed<any>(() =>
-  selectedIndex.value !== null ? Options[selectedIndex.value] : null
+const selectedOption = computed<Option | null>(() =>
+  selectedIndex.value !== null ? typedOptions[selectedIndex.value] : null
 );
 
 // Computed property to get the computer's selected option
-const computerOption = computed<any>(() => Options[comSelectedOption.value]);
+const computerOption = computed<Option>(
+  () => typedOptions[comSelectedOption.value]
+);
 
 // Function to handle click and set the selected index
 const handleSelect = (index: number) => {
@@ -58,7 +69,7 @@ const determineWinner = () => {
         computerOption.value.name === "Paper")
     ) {
       gameResult.value = "You Win!";
-      props.updateScore(1); // Update the score using the passed function
+      props.updateScore(1); // Add a null check
     } else {
       gameResult.value = "You Lose!";
     }
@@ -67,7 +78,7 @@ const determineWinner = () => {
 
 const step = ref<number>(1);
 
-const setStep = (value: any) => {
+const setStep = (value: number) => {
   step.value = value;
 };
 </script>
@@ -107,7 +118,10 @@ const setStep = (value: any) => {
             class="w-3/4 h-3/4 bg-slate-300 absolute top-3 mt-2 rounded-full"
           ></div>
           <div class="w-3/4 h-3/4 bg-zinc-200 absolute mt-2 rounded-full"></div>
-          <component class="absolute" :is="icons[option.icon]" />
+          <component
+            :is="icons[option.icon as keyof typeof icons]"
+            class="absolute"
+          />
         </div>
       </div>
     </div>
